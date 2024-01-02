@@ -1,0 +1,12 @@
+//Have an object selected, gets the position of its pivot point, creates a cube and moves it to the pivot point of the selected object.
+// Inside an xform, the -q flag is for query, the -ws flag is for world space, and the -rotatePivot flag is for the pivot point.
+
+string $sel[] = `ls -sl`;
+
+float $pos[] = `xform -q -ws -rotatePivot $sel[0]`;
+string $myCube[] = `polyCube -w 48 -h 144 -d 10 -n "Potato"`;
+float $sg_Wm[] = `getAttr ($sel[0] + ".worldMatrix")`;
+
+print ("Poistion of : X="+ $sg_Wm[12] + "\nThe new Cube is called: " + $myCube[0]);
+
+move -r $pos[0] $pos[1] $pos[2] $myCube[0];

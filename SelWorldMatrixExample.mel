@@ -1,0 +1,11 @@
+// This is a script that will create a cube and move it to the position of the selected object.
+
+string $sel[] = `ls -sl`;
+
+float $pos[] = `xform -q -ws -t $sel[0]`;
+string $myCube[] = `polyCube -w 48 -h 144 -d 10 -n "Potato"`;
+float $sg_Wm[] = `getAttr ($sel[0] + ".worldMatrix")`;
+
+print ("Poistion of : X="+ $sg_Wm[12] + "\nThe new Cube is called: " + $myCube[0]);
+
+move -r $sg_Wm[12] $sg_Wm[13] $sg_Wm[14] $myCube[0];
