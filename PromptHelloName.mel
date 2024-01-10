@@ -1,0 +1,17 @@
+global proc CreateDoor() {
+    $string result = `promptDialog
+    -title "Enter Infromation"
+    -message "Enter your Name:"
+    -button "OK"
+    -button "Cancel"
+    -defaultButton "OK"
+    -cancelButton "Cancel"
+    -dismissString "Cancel"`;
+
+    if ($result == "OK") {
+        string $input = `promptDialog -query -text`;
+
+        print ("Hello, " + $input + "!\n");
+    }
+}
+string $DoorObj[] = `polyCube -w 1 -h 1 -d 1`
