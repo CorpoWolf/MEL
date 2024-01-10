@@ -7,9 +7,9 @@ showWindow myWin;
 
 proc findNode(string $myText) {
     $nodes = `ls`;
-    $bobName = `textFieldGrp -q -tx $myText`;
+    $nodeSel = `textFieldGrp -q -tx $myText`;
     for ($n in $nodes) {
-        $outPut = `match ($bobName + "") ($n+"")`;
+        $outPut = `match ($nodeSel + "") ($n+"")`;
 
         if ($outPut != "") {
             print($n + "\n");
