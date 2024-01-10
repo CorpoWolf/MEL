@@ -1,0 +1,24 @@
+global proc submitForm(string $nameField, string $ageField) {
+    string $name = `textFieldGrp -query -text $nameField`;
+    string $age = `textFieldGrp -query -text $ageField`;
+    
+    print("Name: " + $name + " | Age: " $age + "\n" );
+
+    if (`window -exists myFormWindow`) {
+        deleteUI -window myFormWindow;
+    }
+}
+
+if (`window -exists myFormWindow`) {
+    deleteUI -window myFormWindow;
+}
+string $window = `window -title "Name & Age MEL Example" myFormWindow`;
+
+columnLayout -adjustableColumn true;
+
+string $nameField = `textFieldGrp -label "Name: "`;
+string $ageField = `textFieldGrp -label "Age: "`;
+
+string $submitCommand = ("submitForm(\"" + $nameField + "\", \"" + $ageField + "\")");
+
+showWindow $window;
