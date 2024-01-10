@@ -1,0 +1,18 @@
+window -t "Search" -w 250 -h 100 myWin;
+    columnLayout -adj true;
+        $bob = `textFieldGrp -l "Node Name:"`;
+        button -l "Find" -c "findNode($bob)";
+
+showWindow myWin;
+
+proc findNode(string $myText) {
+    $nodes = `ls`;
+    $bobName = `textFieldGrp -q -tx $myText`;
+    for ($n in $nodes) {
+        $outPut = `match ($bobName + "") ($n+"")`;
+
+        if ($outPut != "") {
+            print($n + "\n");
+        }
+    }
+}
