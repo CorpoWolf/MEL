@@ -1,9 +1,9 @@
 window -t "Search" -w 300 -h 150 mainWin;
     columnLayout -adj true;
-        $bob = `textFieldGrp -l "Node Name:"`;
-        button -l "Find" -c "findNode($bob)";
+        $inz = `textFieldGrp -l "Node Name:"`;
+        button -l "Find" -c "findNode($inz)";
 
-showWindow myWin;
+showWindow mainWin;
 
 proc findNode(string $myText) {
     $nodes = `ls`;

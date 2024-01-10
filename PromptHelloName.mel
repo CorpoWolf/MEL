@@ -1,4 +1,4 @@
-global proc CreateDoor() {
+global proc EnterName() {
     $string result = `promptDialog
     -title "Enter Infromation"
     -message "Enter your Name:"

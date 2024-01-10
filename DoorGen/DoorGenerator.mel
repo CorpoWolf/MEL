@@ -1,3 +1,14 @@
 // Script to generate a door with size prompts
 // VRChat Profile: https://vrchat.com/home/user/usr_45f42990-f078-4589-9263-3017ae863733
 // Twitter Profile: https://twitter.com/SawyerDotWolf
+
+global proc DoorGenUI() {
+    window -t "Greythorne Door Generator" -w 300 -h 150 primeWin;
+        columnLayout -adj true;
+        string $DoorWidth = `textFieldGrp -l "Door Width: "`
+        button -l "Generate" -c "myCustomProc($DoorWidth)"
+}
+
+proc myCustomProc(string $sizeW) {
+    
+}
