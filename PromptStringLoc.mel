@@ -1,4 +1,4 @@
-window -t "Search" -w 250 -h 100 myWin;
+window -t "Search" -w 300 -h 150 mainWin;
     columnLayout -adj true;
         $bob = `textFieldGrp -l "Node Name:"`;
         button -l "Find" -c "findNode($bob)";
@@ -13,6 +13,7 @@ proc findNode(string $myText) {
 
         if ($outPut != "") {
             print($n + "\n");
+            select -r $n;
         }
     }
 }
