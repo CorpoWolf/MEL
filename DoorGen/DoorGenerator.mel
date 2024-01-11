@@ -2,6 +2,16 @@
 // VRChat Profile: https://vrchat.com/home/user/usr_45f42990-f078-4589-9263-3017ae863733
 // Twitter Profile: https://twitter.com/SawyerDotWolf
 
+//float $DoorSz[] = {0,0,0};
+//string $DrP[3];
+
+global proc ExecuteDoorGen() {
+    for ($i=0; $i < 3; $i++) {
+        global string $DrP[];
+        InConv($DrP[$i], $i);
+    }
+}
+
 proc DoorGenUI() {
     string $WinName = "PrimeWindow";
     
@@ -11,19 +21,25 @@ proc DoorGenUI() {
     
     window -t "Greythorne Door Generator" -w 300 -h 150 $WinName;
         columnLayout -adj true;
-        string $DrP[3]; // Door Parameters
-        $DrW = `textFieldGrp -l "Door Width: "`;
-        $DrH = `textFieldGrp -l "Door Height: "`;
-        $DrT = `textFieldGrp -l "Door Thickness: "`;
-        print("DrP: " + $DrW + "\n");
-        button -l "Generate" -c ("InConv(\"" + $DrP[0] + "\")");
+        global string $DrP[]; // Door Parameters
+        $DrP[0] = `textFieldGrp -l "Door Width: "`;
+        $DrP[1] = `textFieldGrp -l "Door Height: "`;
+        $DrP[2] = `textFieldGrp -l "Door Thickness: "`;
+        button -l "Generate" -c "ExecuteDoorGen";
     showWindow $WinName;
 }
 
 DoorGenUI();
 
-proc InConv(string $Inputs) {
+proc InConv(string $inputField, int $index) {
+    global float $DoorSz[];
+    
+    string $value = `textFieldGrp -query -text $inputField`;
+    
     string $FtIn[];
-    $FtIn = stringToStringArray($Inputs,"'");
-    print($FtIn[0] + " & " + $FtIn[1]);
+    $FtIn = stringToStringArray($value,"'");
+    print($FtIn[0] + " & " + $FtIn[1]+"\n");
+    print("Before any changes: " + $DoorSz[0] + " & " + $DoorSz[1] + " & " + $DoorSz[2]+"\n");
+    $DoorSz[$index] = ((float)$FtIn[0] * 12) + (float)$FtIn[1];
+    print("After changes: " + $DoorSz[0] + " & " + $DoorSz[1] + " & " + $DoorSz[2]+"\n");
 }
