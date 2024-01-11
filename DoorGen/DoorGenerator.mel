@@ -2,19 +2,28 @@
 // VRChat Profile: https://vrchat.com/home/user/usr_45f42990-f078-4589-9263-3017ae863733
 // Twitter Profile: https://twitter.com/SawyerDotWolf
 
-global proc DoorGenUI() {
-    window -t "Greythorne Door Generator" -w 300 -h 150 primezWin;
+proc DoorGenUI() {
+    string $WinName = "PrimeWindow";
+    
+    if (`window -exists $WinName`) {
+        deleteUI $WinName;
+    }
+    
+    window -t "Greythorne Door Generator" -w 300 -h 150 $WinName;
         columnLayout -adj true;
-        string $DrPms[3]; // Door Parameters
-        string $DrPms[0] = `textFieldGrp -l "Door Width: "`;
-        string $DrPms[1] = `textFieldGrp -l "Door Height: "`;
-        string $DrPms[2] = `textFieldGrp -l "Door Thickness: "`;
-        button -l "Generate" -c "myCustomProc($DoorWidth)";
-    showWindow primezWin;
+        string $DrP[3]; // Door Parameters
+        $DrW = `textFieldGrp -l "Door Width: "`;
+        $DrH = `textFieldGrp -l "Door Height: "`;
+        $DrT = `textFieldGrp -l "Door Thickness: "`;
+        print("DrP: " + $DrW + "\n");
+        button -l "Generate" -c ("InConv(\"" + $DrP[0] + "\")");
+    showWindow $WinName;
 }
 
 DoorGenUI();
 
-proc myCustomProc(string $sizeW) {
-    
+proc InConv(string $Inputs) {
+    string $FtIn[];
+    $FtIn = stringToStringArray($Inputs,"'");
+    print($FtIn[0] + " & " + $FtIn[1]);
 }
