@@ -26,6 +26,12 @@ global proc ExecuteDoorGen() {
         global string $DrP[];
         InConv($DrP[$i], $i);
     }
+
+    global float $DoorSz[];
+    string $NewDoor[] = `polyCube -w $DoorSz[0] -h $DoorSz[1] -d $DoorSz[2] -n "Door"`;
+    move -rpr 0 ($DoorSz[1]/2) 0;
+    move -r 0 (-$DoorSz[1]/2) 0 ($NewDoor[0] + ".scalePivot") ($NewDoor[0] + ".rotatePivot");
+    print("Door Generated");
 }
 
 proc InConv(string $inputField, int $index) {
