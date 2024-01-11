@@ -2,16 +2,6 @@
 // VRChat Profile: https://vrchat.com/home/user/usr_45f42990-f078-4589-9263-3017ae863733
 // Twitter Profile: https://twitter.com/SawyerDotWolf
 
-//float $DoorSz[] = {0,0,0};
-//string $DrP[3];
-
-global proc ExecuteDoorGen() {
-    for ($i=0; $i < 3; $i++) {
-        global string $DrP[];
-        InConv($DrP[$i], $i);
-    }
-}
-
 proc DoorGenUI() {
     string $WinName = "PrimeWindow";
     
@@ -31,15 +21,32 @@ proc DoorGenUI() {
 
 DoorGenUI();
 
+global proc ExecuteDoorGen() {
+    for ($i=0; $i < 3; $i++) {
+        global string $DrP[];
+        InConv($DrP[$i], $i);
+    }
+}
+
 proc InConv(string $inputField, int $index) {
     global float $DoorSz[];
-    
     string $value = `textFieldGrp -query -text $inputField`;
-    
     string $FtIn[];
+
+    if ($value == "") {
+        $DoorSz[$index] = 12; //Defaults to 1ft
+    }
+
     $FtIn = stringToStringArray($value,"'");
-    print($FtIn[0] + " & " + $FtIn[1]+"\n");
-    print("Before any changes: " + $DoorSz[0] + " & " + $DoorSz[1] + " & " + $DoorSz[2]+"\n");
-    $DoorSz[$index] = ((float)$FtIn[0] * 12) + (float)$FtIn[1];
-    print("After changes: " + $DoorSz[0] + " & " + $DoorSz[1] + " & " + $DoorSz[2]+"\n");
+    if (size($FtIn) > 2) {
+        print("Invalid Input");
+    } 
+    else {
+        if (size($FtIn) == 1) {
+            $FtIn[1] = $FtIn[0];
+            $FtIn[0] = 0;
+        }
+        $DoorSz[$index] = ((float)$FtIn[0] * 12) + (float)$FtIn[1];
+        print("Size of DoorSize[" + $index + "]: " + $DoorSz[$index] + "\n");
+    }
 }
