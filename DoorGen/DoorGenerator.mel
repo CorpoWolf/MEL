@@ -3,11 +3,16 @@
 // Twitter Profile: https://twitter.com/SawyerDotWolf
 
 global proc DoorGenUI() {
-    window -t "Greythorne Door Generator" -w 300 -h 150 primeWin;
+    window -t "Greythorne Door Generator" -w 300 -h 150 primezWin;
         columnLayout -adj true;
-        string $DoorWidth = `textFieldGrp -l "Door Width: "`
-        button -l "Generate" -c "myCustomProc($DoorWidth)"
+        string $DrW = `textFieldGrp -l "Door Width: "`;
+        string $DrH = `textFieldGrp -l "Door Height: "`;
+        string $DrT = `textFieldGrp -l "Door Thickness: "`;
+        button -l "Generate" -c "myCustomProc($DoorWidth)";
+    showWindow primezWin;
 }
+
+DoorGenUI();
 
 proc myCustomProc(string $sizeW) {
     
