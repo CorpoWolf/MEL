@@ -5,9 +5,10 @@
 global proc DoorGenUI() {
     window -t "Greythorne Door Generator" -w 300 -h 150 primezWin;
         columnLayout -adj true;
-        string $DrW = `textFieldGrp -l "Door Width: "`;
-        string $DrH = `textFieldGrp -l "Door Height: "`;
-        string $DrT = `textFieldGrp -l "Door Thickness: "`;
+        string $DrPms[3]; // Door Parameters
+        string $DrPms[0] = `textFieldGrp -l "Door Width: "`;
+        string $DrPms[1] = `textFieldGrp -l "Door Height: "`;
+        string $DrPms[2] = `textFieldGrp -l "Door Thickness: "`;
         button -l "Generate" -c "myCustomProc($DoorWidth)";
     showWindow primezWin;
 }
