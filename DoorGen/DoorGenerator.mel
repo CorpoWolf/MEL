@@ -109,6 +109,10 @@ proc GenerateHingeSide() {
     float $Vert12[3] = {$xMain[1], $yMain[2], $zMain[2]};
     float $Vert13[3] = {$xMain[1], $yMain[2], $zMain[1]};
     AppnVert(9, $Vert12, $Vert13);
+    
+    polyMergeVertex -d 0;
+    select -r HingeSide;
+    polyAppend -ch 1 -ed 11 -ed 16;
 } 
 
 proc InitVert(float $p0[], float $p1[], float $p2[], float $p3[]) {
