@@ -78,7 +78,7 @@ proc GenerateHingeSide() {
     float $HingePosTop[] = {7.375, 39.3125, 71.25};
     float $HingeHeight = 4.5;
     
-    float $Vert0[3] = {$xMain[0], $DoorSz[1], $zMain[2]};
+    float $Vert0[3] = {$xMain[0], inch($DoorSz[1]), $zMain[2]};
     float $Vert1[3] = {$xMain[0], $Vert0[1], $zMain[0]};
 
     float $Vert2[3] = {$xMain[0], 0.0, $zMain[1]};
