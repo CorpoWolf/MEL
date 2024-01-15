@@ -65,46 +65,60 @@ proc InConv(string $inputField, int $index) {
 //Right is positive, left is negative : X axis
 proc GenerateHingeSide() {
     global float $DoorSz[];
+    float $xMain[];
+    $xMain[0] = inch($DoorSz[0]/2);
+    $xMain[1] = $xMain[1] - inch(0.125);
+
     float $HingePosTop[] = {7.375, 39.3125, 71.25};
     float $HingeHeight = 4.5;
 
     print("DoorSz[0] = " + $DoorSz[0]);
     
     float $Vert0[3];
-    $Vert0[0] = inch($DoorSz[0] /2);
+    $Vert0[0] = $xMain[0];
     $Vert0[1] = inch($DoorSz[1]);
     $Vert0[2] = inch(-($DoorSz[2] / 2));
 
     float $Vert1[3];
-    $Vert1[0] = $Vert0[0];
+    $Vert1[0] = $xMain[0];
     $Vert1[1] = $Vert0[1];
     $Vert1[2] = $Vert0[2]*-1;
 
     float $Vert2[3];
-    $Vert2[0] = $Vert1[0];
+    $Vert2[0] = $xMain[0];
     $Vert2[1] = $Vert1[1] - inch($HingePosTop[0]);
     $Vert2[2] = $Vert1[2] - inch(0.5);
 
     float $Vert3[3];
-    $Vert3[0] = $Vert0[0];
+    $Vert3[0] = $xMain[0];
     $Vert3[1] = $Vert2[1];
     $Vert3[2] = $Vert0[2];
 
     InitVert($Vert0, $Vert1, $Vert2, $Vert3);
 
     float $Vert4[3];
-    $Vert4[0] = $Vert0[0];
+    $Vert4[0] = $xMain[0];
     $Vert4[1] = inch(splitLine($HingePosTop[0], $HingePosTop[1], $HingeHeight, $DoorSz[1]));
     $Vert4[2] = $Vert1[2];
 
     float $Vert5[3];
-    $Vert5[0] = $Vert0[0];
+    $Vert5[0] = $xMain[0];
     $Vert5[1] = $Vert2[1] - inch($HingeHeight);
-    print("Vert2[1] = " + $Vert2[1] + "\n");
-    print("HingeHeight = " + $HingeHeight + "\n");
-    print("Vert5[1] = " + $Vert5[1] + "\n");
     $Vert5[2] = $Vert2[2];
+
     AppnVert(1, $Vert4, $Vert5);
+
+    float $Vert6[3];
+    $Vert6[0] = $xMain[0];
+    $Vert6[1] = $Vert4[1];
+    $Vert6[2] = $Vert0[2];
+
+    float $Vert7[3];
+    $Vert7[0] = $xMain[0];
+    $Vert7[1] = $Vert5[1];
+    $Vert7[2] = $Vert0[2];
+
+    AppnVert(5, $Vert6, $Vert7);
 } 
 
 proc InitVert(float $p0[], float $p1[], float $p2[], float $p3[]) {
