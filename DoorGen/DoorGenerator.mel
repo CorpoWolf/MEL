@@ -2,6 +2,7 @@
 // VRChat Profile: https://vrchat.com/home/user/usr_45f42990-f078-4589-9263-3017ae863733
 // Twitter Profile: https://twitter.com/SawyerDotWolf
 
+// Just GUI generation
 proc DoorGenUI() {
     string $WinName = "PrimeWindow";
     
@@ -18,7 +19,6 @@ proc DoorGenUI() {
         button -l "Generate" -c "ExecuteDoorGen";
     showWindow $WinName;
 }
-
 DoorGenUI();
 
 global proc ExecuteDoorGen() {
@@ -32,8 +32,13 @@ global proc ExecuteDoorGen() {
     move -rpr 0 ($DoorSz[1]/2) 0;
     move -r 0 (-$DoorSz[1]/2) 0 ($NewDoor[0] + ".scalePivot") ($NewDoor[0] + ".rotatePivot");
     print("Door Generated");
+    select -r ($NewDoor[0] + ".f[4]");
+    doDelete;
+    
+    GenerateHingeSide();
 }
 
+//Inch converter
 proc InConv(string $inputField, int $index) {
     global float $DoorSz[];
     string $value = `textFieldGrp -query -text $inputField`;
@@ -55,4 +60,43 @@ proc InConv(string $inputField, int $index) {
         $DoorSz[$index] = ((float)$FtIn[0] * 12) + (float)$FtIn[1];
         print("Size of DoorSize[" + $index + "]: " + $DoorSz[$index] + "\n");
     }
+}
+
+//Right is positive, left is negative : X axis
+proc GenerateHingeSide() {
+    global float $DoorSz[];
+    float $HingePosTop[] = {7.375, 39.3125, 71.25};
+    float $HingeHeight = 4.5;
+
+    print("DoorSz[0] = " + $DoorSz[0]);
+    
+    float $Vert0[3];
+    $Vert0[0] = inch($DoorSz[0] /2);
+    $Vert0[1] = inch($DoorSz[1]);
+    $Vert0[2] = inch(-($DoorSz[2] / 2));
+
+    float $Vert1[3];
+    $Vert1[0] = $Vert0[0];
+    $Vert1[1] = $Vert0[1];
+    $Vert1[2] = $Vert0[2]*-1;
+
+    float $Vert2[3];
+    $Vert2[0] = $Vert1[0];
+    $Vert2[1] = $Vert1[1] - inch($HingePosTop[0]);
+    $Vert2[2] = $Vert1[2] - inch(0.5);
+
+    float $Vert3[3];
+    $Vert3[0] = $Vert0[0];
+    $Vert3[1] = $Vert2[1];
+    $Vert3[2] = $Vert0[2];
+
+    InitVert($Vert0, $Vert1, $Vert2, $Vert3);
+} 
+
+proc InitVert(float $p1[], float $p2[], float $p3[], float $p4[]) {
+    string $NewPoly[] = `polyCreateFacet -ch 1 -p $p1[0] $p1[1] $p1[2] -p $p2[0] $p2[1] $p2[2] -p $p3[0] $p3[1] $p3[2] -p $p4[0] $p4[1] $p4[2]`;
+}
+
+proc float inch(float $value) {
+    return $value * 2.54;
 }
