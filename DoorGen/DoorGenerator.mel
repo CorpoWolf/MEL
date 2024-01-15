@@ -112,7 +112,7 @@ proc GenerateHingeSide() {
     
     polyMergeVertex -d 0;
     select -r HingeSide;
-    polyAppend -ch 1 -ed 11 -ed 16;
+    AppnEdgs(11,16);
 } 
 
 proc InitVert(float $p0[], float $p1[], float $p2[], float $p3[]) {
@@ -121,6 +121,10 @@ proc InitVert(float $p0[], float $p1[], float $p2[], float $p3[]) {
 
 proc AppnVert(int $e0, float $p0[], float $p1[]) {
     string $NewPoly[] = `polyAppend -ch 1 -ed $e0 -p $p0[0] $p0[1] $p0[2] -p $p1[0] $p1[1] $p1[2]`;
+}
+
+proc AppnEdgs(int $e0, int $e1) {
+    string $NewPoly[] = `polyAppend -ch 1 -ed $e0 -ed $e1`;
 }
 
 proc float inch(float $value) {
