@@ -91,12 +91,34 @@ proc GenerateHingeSide() {
     $Vert3[2] = $Vert0[2];
 
     InitVert($Vert0, $Vert1, $Vert2, $Vert3);
+
+    float $Vert4[3];
+    $Vert4[0] = $Vert0[0];
+    $Vert4[1] = inch(splitLine($HingePosTop[0], $HingePosTop[1], $HingeHeight, $DoorSz[1]));
+    $Vert4[2] = $Vert1[2];
+
+    float $Vert5[3];
+    $Vert5[0] = $Vert0[0];
+    $Vert5[1] = $Vert2[1] - inch($HingeHeight);
+    print("Vert2[1] = " + $Vert2[1] + "\n");
+    print("HingeHeight = " + $HingeHeight + "\n");
+    print("Vert5[1] = " + $Vert5[1] + "\n");
+    $Vert5[2] = $Vert2[2];
+    AppnVert(1, $Vert4, $Vert5);
 } 
 
-proc InitVert(float $p1[], float $p2[], float $p3[], float $p4[]) {
-    string $NewPoly[] = `polyCreateFacet -ch 1 -p $p1[0] $p1[1] $p1[2] -p $p2[0] $p2[1] $p2[2] -p $p3[0] $p3[1] $p3[2] -p $p4[0] $p4[1] $p4[2]`;
+proc InitVert(float $p0[], float $p1[], float $p2[], float $p3[]) {
+    string $NewPoly[] = `polyCreateFacet -ch 1 -p $p0[0] $p0[1] $p0[2] -p $p1[0] $p1[1] $p1[2] -p $p2[0] $p2[1] $p2[2] -p $p3[0] $p3[1] $p3[2]`;
+}
+
+proc AppnVert(int $e0, float $p0[], float $p1[]) {
+    string $NewPoly[] = `polyAppend -ch 1 -ed $e0 -p $p0[0] $p0[1] $p0[2] -p $p1[0] $p1[1] $p1[2]`;
 }
 
 proc float inch(float $value) {
     return $value * 2.54;
+}
+
+proc float splitLine(float $h0, float $h1, float $hh, float $dh) {
+    return $dh - ((($h1 - ($h0 + $hh))/2) + ($h0 + $hh));
 }
