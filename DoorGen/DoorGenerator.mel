@@ -66,40 +66,49 @@ proc InConv(string $inputField, int $index) {
 proc GenerateHingeSide() {
     global float $DoorSz[];
 
+    float $HingePosTop[] = {7.375, 39.3125, 71.25};
+    float $HingeHeight = 4.5;
+
     float $xMain[2];
     $xMain[0] = inch($DoorSz[0]/2);
-    $xMain[1] = $xMain[1] - inch(0.125);
+    $xMain[1] = $xMain[0] - inch(0.125);
+
+    float $yMain[4];
+    $yMain[0] = inch($DoorSz[1]);
+    $yMain[1] = $yMain[0] - inch($HingePosTop[0]);
+    $yMain[2] = $yMain[1] - inch($HingeHeight);
+    $yMain[3] = inch(splitLine($HingePosTop[0], $HingePosTop[1], $HingeHeight, $DoorSz[1]));
 
     float $zMain[3];
     $zMain[0] = inch($DoorSz[2]/2);
     $zMain[1] = $zMain[0] - inch(0.5);
     $zMain[2] = -($zMain[0]);
-
-    float $HingePosTop[] = {7.375, 39.3125, 71.25};
-    float $HingeHeight = 4.5;
     
-    float $Vert0[3] = {$xMain[0], inch($DoorSz[1]), $zMain[2]};
-    float $Vert1[3] = {$xMain[0], $Vert0[1], $zMain[0]};
-
-    float $Vert2[3] = {$xMain[0], 0.0, $zMain[1]};
-    $Vert2[1] = $Vert1[1] - inch($HingePosTop[0]);
-
-    float $Vert3[3] = {$xMain[0], $Vert2[1], $zMain[2]};
+    float $Vert0[3] = {$xMain[0], $yMain[0], $zMain[2]};
+    float $Vert1[3] = {$xMain[0], $yMain[0], $zMain[0]};
+    float $Vert2[3] = {$xMain[0], $yMain[1], $zMain[1]};
+    float $Vert3[3] = {$xMain[0], $yMain[1], $zMain[2]};
     InitVert($Vert0, $Vert1, $Vert2, $Vert3);
 
-    float $Vert4[3];
-    $Vert4[0] = $xMain[0];
-    $Vert4[1] = inch(splitLine($HingePosTop[0], $HingePosTop[1], $HingeHeight, $DoorSz[1]));
-    $Vert4[2] = $Vert1[2];
-
-    float $Vert5[3] = {$xMain[0], 0.0, $zMain[1]};
-    $Vert5[1] = $Vert2[1] - inch($HingeHeight);
-
+    float $Vert4[3] = {$xMain[0], $yMain[3], $zMain[0]};
+    float $Vert5[3] = {$xMain[0], $yMain[2], $zMain[1]};
     AppnVert(1, $Vert4, $Vert5);
 
-    float $Vert6[3] = {$xMain[0], $Vert4[1], $zMain[2]};
-    float $Vert7[3] = {$xMain[0], $Vert5[1], $zMain[2]};
+    float $Vert6[3] = {$xMain[0], $yMain[3], $zMain[2]};
+    float $Vert7[3] = {$xMain[0], $yMain[2], $zMain[2]};
     AppnVert(5, $Vert6, $Vert7);
+
+    float $Vert8[3] = {$xMain[1], $yMain[1], $zMain[1]};
+    float $Vert9[3] = {$xMain[1], $yMain[1], $zMain[2]};
+    AppnVert(2, $Vert8, $Vert9);
+
+    float $Vert10[3] = {$xMain[1], $yMain[2], $zMain[1]};
+    float $Vert11[3] = {$xMain[1], $yMain[1], $zMain[1]};
+    AppnVert(6, $Vert10, $Vert11);
+
+    float $Vert12[3] = {$xMain[1], $yMain[2], $zMain[2]};
+    float $Vert13[3] = {$xMain[1], $yMain[2], $zMain[1]};
+    AppnVert(9, $Vert12, $Vert13);
 } 
 
 proc InitVert(float $p0[], float $p1[], float $p2[], float $p3[]) {
