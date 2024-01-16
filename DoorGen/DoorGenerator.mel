@@ -51,8 +51,7 @@ proc InConv(string $inputField, int $index) {
     $FtIn = stringToStringArray($value,"'");
     if (size($FtIn) > 2) {
         print("Invalid Input");
-    } 
-    else {
+    } else {
         if (size($FtIn) == 1) {
             $FtIn[1] = $FtIn[0];
             $FtIn[0] = 0;
