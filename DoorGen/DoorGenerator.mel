@@ -66,70 +66,131 @@ proc GenerateHingeSide() {
     global float $DoorSz[];
 
     float $HingePosTop[] = {7.375, 39.3125, 71.25};
-    float $HingeHeight = 4.5;
 
-    float $xMain[2];
-    $xMain[0] = inch($DoorSz[0]/2);
-    $xMain[1] = $xMain[0] - inch(0.125);
+    for ($arr = 0; $arr < 3; $arr++) {
 
-    float $yMain[4];
-    $yMain[0] = inch($DoorSz[1]);
-    $yMain[1] = $yMain[0] - inch($HingePosTop[0]);
-    $yMain[2] = $yMain[1] - inch($HingeHeight);
-    $yMain[3] = inch(splitLine($HingePosTop[0], $HingePosTop[1], $HingeHeight, $DoorSz[1]));
+        if ($arr == 2) {
+            $geoTop = $DoorSz[1] - midLine($HingePosTop[($arr-1)], $HingePosTop[$arr], 4.5);
+            $geoHeight = $DoorSz[2] + midLine($HingePosTop[$arr-1], $HingePosTop[$arr], 4.5);
+            $geoHingeTop = $HingePosTop[$arr] - $geoHeight;
 
-    float $zMain[3];
-    $zMain[0] = inch($DoorSz[2]/2);
-    $zMain[1] = $zMain[0] - inch(0.5);
-    $zMain[2] = -($zMain[0]);
-    
-    float $Vert0[3] = {$xMain[0], $yMain[0], $zMain[2]};
-    float $Vert1[3] = {$xMain[0], $yMain[0], $zMain[0]};
-    float $Vert2[3] = {$xMain[0], $yMain[1], $zMain[1]};
-    float $Vert3[3] = {$xMain[0], $yMain[1], $zMain[2]};
-    InitVert($Vert0, $Vert1, $Vert2, $Vert3);
+            float $wh[] = vrtxRNotch($DoorSz[2], $geoHeight, 1.5, 4.5, $geoHingeTop);
+            float $xyzCord[] = whXYZ($wh);
 
-    float $Vert4[3] = {$xMain[0], $yMain[3], $zMain[0]};
-    float $Vert5[3] = {$xMain[0], $yMain[2], $zMain[1]};
-    AppnVert(1, $Vert4, $Vert5);
+            float $offset[] = {inch($DoorSz[0]/2), inch($geoTop), 0};
+            float $polyCord[] = vrtxRePosition($xyzCord, $offset);
+            FirstPoly($polyCord);
+            AppnPoly($polyCord, 1, 4);
+            AppnPoly($polyCord, 5, 6);
 
-    float $Vert6[3] = {$xMain[0], $yMain[3], $zMain[2]};
-    float $Vert7[3] = {$xMain[0], $yMain[2], $zMain[2]};
-    AppnVert(5, $Vert6, $Vert7);
+        } else {
+            float $geoTop;
+            float $geoHeight;
+            float $geoHingeTop;
+            if ($arr > 0) {
+                $geoTop = $DoorSz[1] - midLine($HingePosTop[($arr-1)], $HingePosTop[$arr], 4.5);
+                $geoHeight = midLine($HingePosTop[$arr], $HingePosTop[$arr+1], 4.5) - midLine($HingePosTop[$arr-1], $HingePosTop[$arr], 4.5);
+                $geoHingeTop = $HingePosTop[$arr] - $geoHeight;
+            } else {
+                $geoTop = $DoorSz[1];
+                $geoHeight = midLine($HingePosTop[$arr], $HingePosTop[$arr+1], 4.5);
+                $geoHingeTop = $HingePosTop[$arr];
+            }
 
-    float $Vert8[3] = {$xMain[1], $yMain[1], $zMain[1]};
-    float $Vert9[3] = {$xMain[1], $yMain[1], $zMain[2]};
-    AppnVert(2, $Vert8, $Vert9);
+            float $wh[] = vrtxRNotch($DoorSz[2], $geoHeight, 1.5, 4.5, $geoHingeTop);
+            float $xyzCord[] = whXYZ($wh);
 
-    float $Vert10[3] = {$xMain[1], $yMain[2], $zMain[1]};
-    float $Vert11[3] = {$xMain[1], $yMain[1], $zMain[1]};
-    AppnVert(6, $Vert10, $Vert11);
-
-    float $Vert12[3] = {$xMain[1], $yMain[2], $zMain[2]};
-    float $Vert13[3] = {$xMain[1], $yMain[2], $zMain[1]};
-    AppnVert(9, $Vert12, $Vert13);
-    
-    polyMergeVertex -d 0;
-    select -r HingeSide;
-    AppnEdgs(11,16);
-} 
-
-proc InitVert(float $p0[], float $p1[], float $p2[], float $p3[]) {
-    string $NewPoly[] = `polyCreateFacet -ch 1 -p $p0[0] $p0[1] $p0[2] -p $p1[0] $p1[1] $p1[2] -p $p2[0] $p2[1] $p2[2] -p $p3[0] $p3[1] $p3[2] -n "HingeSide"`;
+            float $offset[] = {inch($DoorSz[0]/2), inch($geoTop), 0};
+            float $polyCord[] = vrtxRePosition($xyzCord, $offset);
+            FirstPoly($polyCord);
+            AppnPoly($polyCord, 1, 4);
+            AppnPoly($polyCord, 5, 6);
+        }
+    }
 }
 
-proc AppnVert(int $e0, float $p0[], float $p1[]) {
-    string $NewPoly[] = `polyAppend -ch 1 -ed $e0 -p $p0[0] $p0[1] $p0[2] -p $p1[0] $p1[1] $p1[2]`;
+proc FirstPoly(float $vrts[]) {
+    string $cmd = "polyCreateFacet ";
+    for ($Macro = 0; $Macro < 4; $Macro++) {
+        $cmd += "-p ";
+
+        for ($micro = 0; $micro < 3; $micro++) {
+            $cmd += $vrts[$Macro*3 + $micro] + " ";
+        }
+    }
+    print($cmd + "\n");
+    eval($cmd);
 }
 
-proc AppnEdgs(int $e0, int $e1) {
-    string $NewPoly[] = `polyAppend -ch 1 -ed $e0 -ed $e1`;
+proc AppnPoly(float $vrts[], int $edge, int $newVert) {
+    string $cmd = "polyAppend -ch 1 -ed " + $edge;
+    for ($Macro = $newVert; $Macro < $newVert + 2; $Macro++) {
+        $cmd += "-p ";
+
+        for ($micro = 0; $micro < 3; $micro++) {
+            $cmd += $vrts[$Macro*3 + $micro] + " ";
+        }
+    }
+    print($cmd + "\n");
+    eval($cmd);
+}
+
+proc float[] vrtxRNotch(float $w, float $h, float $nw, float $nh, float $nTop) {
+
+    float $xLn[3];
+    float $yLn[4];
+
+    $xLn[0] = $w/2;
+    $xLn[1] = $w/2-($w-$nw);
+    $xLn[2] = -$w/2;
+
+    $yLn[0] = 0;
+    $yLn[1] = -$nTop;
+    $yLn[2] = -$nTop - $nh;
+    $yLn[3] = -$h;
+    
+    float $vrtxData[] = {
+        $xLn[2], $yLn[0],
+        $xLn[0], $yLn[0],
+        $xLn[1], $yLn[1],
+        $xLn[2], $yLn[1],
+
+        $xLn[0], $yLn[3],
+        $xLn[1], $yLn[2],
+
+        $xLn[2], $yLn[3],
+        $xLn[2], $yLn[2]
+    };
+    return $vrtxData;
+}
+
+proc float[] whXYZ(float $wh[]) {
+    float $xyzCord[];
+
+        for ($arr = 0; $arr < size($wh)/2; $arr++) {
+            $xyzCord[$arr*3] = 0; // x always zero
+            $xyzCord[$arr*3+2] = inch($wh[$arr*2]); //y = h
+            $xyzCord[$arr*3+1] = inch($wh[$arr*2+1]); //z = w
+            print("Vert #" + $arr + " | X : " + $xyzCord[$arr*3] + " | Y : " + $wh[$arr*2] + " | Z : " + $wh[$arr*2+1] + "\n");
+        }
+    return $xyzCord;
+}
+
+proc float[] vrtxRePosition(float $origin[], float $translate[]) {
+    float $rePosition[];
+
+    for ($arr=0; $arr < (size($origin)/3); $arr++) {
+        $rePosition[$arr*3] = $origin[$arr*3] + $translate[0]; // 0,3,6,9
+        $rePosition[$arr*3+1] = $origin[$arr*3+1] + $translate[1]; // 1,4,7,10
+        $rePosition[$arr*3+2] = $origin[$arr*3+2] + $translate[2]; // 2,5,8,11
+    }
+    return $rePosition;
 }
 
 proc float inch(float $value) {
     return $value * 2.54;
 }
 
-proc float splitLine(float $h0, float $h1, float $hh, float $dh) {
-    return $dh - ((($h1 - ($h0 + $hh))/2) + ($h0 + $hh));
+proc float midLine(float $posA, float $posB, float $objHeight) {
+    return (($posB - ($posA + $objHeight))/2) + ($posA + $objHeight);
 }

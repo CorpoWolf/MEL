@@ -1,0 +1,11 @@
+proc InitVert(float $p0[], float $p1[], float $p2[], float $p3[]) {
+    string $NewPoly[] = `polyCreateFacet -ch 1 -p $p0[0] $p0[1] $p0[2] -p $p1[0] $p1[1] $p1[2] -p $p2[0] $p2[1] $p2[2] -p $p3[0] $p3[1] $p3[2] -n "HingeSide"`;
+}
+
+proc AppnVert(int $e0, float $p0[], float $p1[]) {
+    string $NewPoly[] = `polyAppend -ch 1 -ed $e0 -p $p0[0] $p0[1] $p0[2] -p $p1[0] $p1[1] $p1[2]`;
+}
+
+proc AppnEdgs(int $e0, int $e1) {
+    string $NewPoly[] = `polyAppend -ch 1 -ed $e0 -ed $e1`;
+}
