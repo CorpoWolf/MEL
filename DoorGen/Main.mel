@@ -2,8 +2,8 @@
 // VRChat Profile: https://vrchat.com/home/user/usr_45f42990-f078-4589-9263-3017ae863733
 // Twitter Profile: https://twitter.com/SawyerDotWolf
 
-// Just GUI generation
-proc DoorGenUI() {
+
+proc sg_doorUI() {
     string $WinName = "PrimeWindow";
     
     if (`window -exists $WinName`) {
@@ -16,18 +16,19 @@ proc DoorGenUI() {
         $DrP[0] = `textFieldGrp -l "Door Width: "`;
         $DrP[1] = `textFieldGrp -l "Door Height: "`;
         $DrP[2] = `textFieldGrp -l "Door Thickness: "`;
-        button -l "Generate" -c "ExecuteDoorGen";
+        button -l "Generate" -c "sg_doorConstructor";
     showWindow $WinName;
 }
-DoorGenUI();
+sg_doorUI();
 
-global proc ExecuteDoorGen() {
+proc sg_doorConstructor() {
+    global string $DrP[];
+    global float $DoorSz[];
+
     for ($i=0; $i < 3; $i++) {
-        global string $DrP[];
-        InConv($DrP[$i], $i);
+        $DoorSz[$i] = sg_inchParser($DrP[$i]);
     }
 
-    global float $DoorSz[];
     string $NewDoor[] = `polyCube -w $DoorSz[0] -h $DoorSz[1] -d $DoorSz[2] -n "Door"`;
     move -rpr 0 ($DoorSz[1]/2) 0;
     move -r 0 (-$DoorSz[1]/2) 0 ($NewDoor[0] + ".scalePivot") ($NewDoor[0] + ".rotatePivot");
@@ -36,29 +37,6 @@ global proc ExecuteDoorGen() {
     doDelete;
     
     GenerateHingeSide();
-}
-
-//Inch converter
-proc InConv(string $inputField, int $index) {
-    global float $DoorSz[];
-    string $value = `textFieldGrp -query -text $inputField`;
-    string $FtIn[];
-
-    if ($value == "") {
-        $DoorSz[$index] = 12; //Defaults to 1ft
-    }
-
-    $FtIn = stringToStringArray($value,"'");
-    if (size($FtIn) > 2) {
-        print("Invalid Input");
-    } else {
-        if (size($FtIn) == 1) {
-            $FtIn[1] = $FtIn[0];
-            $FtIn[0] = 0;
-        }
-        $DoorSz[$index] = ((float)$FtIn[0] * 12) + (float)$FtIn[1];
-        print("Size of DoorSize[" + $index + "]: " + $DoorSz[$index] + "\n");
-    }
 }
 
 //Right is positive, left is negative : X axis

@@ -1,0 +1,19 @@
+global proc float sg_inchParser(string $inputField) {
+    float $output;
+    string $FtIn[];
+
+    string $value = `textFieldGrp -query -text $inputField`;
+    $FtIn = stringToStringArray($value,"'");
+
+    if ($value == "") {
+        $output = 12; //Defaults to 1ft
+    } else if (size($FtIn) == 1) {
+        $output = (float)$FtIn[0];
+    } else if (size($FtIn) == 2) {
+        $output = ((float)$FtIn[0] * 12) + (float)$FtIn[1];
+    } else {
+        error "invalid input";
+    }
+
+    return $output;
+}
