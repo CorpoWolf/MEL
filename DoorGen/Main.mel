@@ -43,14 +43,14 @@ proc GenerateHingeSide() {
     global float $DoorSz[];
     float $offset[];
 
-    float $HingePosTop[] = {7.375, 39.3125, 71.25};
+    float $hingeTop[] = {7.375, 39.3125, 71.25};
 
     for ($arr = 0; $arr < 3; $arr++) {
 
         if ($arr == 2) {
-            $geoTop = $DoorSz[1] - midLine($HingePosTop[($arr-1)], $HingePosTop[$arr], 4.5);
-            $geoHeight = $DoorSz[2] + midLine($HingePosTop[$arr-1], $HingePosTop[$arr], 4.5);
-            $geoHingeTop = $HingePosTop[$arr] - $geoHeight;
+            $geoTop = $DoorSz[1] - midLine($hingeTop[($arr-1)], $hingeTop[$arr], 4.5);
+            $geoHeight = $DoorSz[2] + midLine($hingeTop[$arr-1], $hingeTop[$arr], 4.5);
+            $geoHingeTop = $hingeTop[$arr] - $geoHeight;
 
             float $wh[] = sg_notchRight($DoorSz[2], $geoHeight, 1.5, 4.5, $geoHingeTop);
             float $xyzCord[] = sg_convert2DTo3D($wh);
@@ -69,13 +69,13 @@ proc GenerateHingeSide() {
             float $geoHeight;
             float $geoHingeTop;
             if ($arr > 0) {
-                $geoTop = $DoorSz[1] - midLine($HingePosTop[($arr-1)], $HingePosTop[$arr], 4.5);
-                $geoHeight = midLine($HingePosTop[$arr], $HingePosTop[$arr+1], 4.5) - midLine($HingePosTop[$arr-1], $HingePosTop[$arr], 4.5);
-                $geoHingeTop = $HingePosTop[$arr] - $geoHeight;
+                $geoTop = $DoorSz[1] - midLine($hingeTop[($arr-1)], $hingeTop[$arr], 4.5);
+                $geoHeight = midLine($hingeTop[$arr], $hingeTop[$arr+1], 4.5) - midLine($hingeTop[$arr-1], $hingeTop[$arr], 4.5);
+                $geoHingeTop = $hingeTop[$arr] - $geoHeight;
             } else {
                 $geoTop = $DoorSz[1];
-                $geoHeight = midLine($HingePosTop[$arr], $HingePosTop[$arr+1], 4.5);
-                $geoHingeTop = $HingePosTop[$arr];
+                $geoHeight = midLine($hingeTop[$arr], $hingeTop[$arr+1], 4.5);
+                $geoHingeTop = $hingeTop[$arr];
             }
 
             float $wh[] = sg_notchRight($DoorSz[2], $geoHeight, 1.5, 4.5, $geoHingeTop);
