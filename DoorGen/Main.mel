@@ -52,17 +52,17 @@ proc GenerateHingeSide() {
             $geoHeight = $DoorSz[2] + midLine($HingePosTop[$arr-1], $HingePosTop[$arr], 4.5);
             $geoHingeTop = $HingePosTop[$arr] - $geoHeight;
 
-            float $wh[] = vrtxRNotch($DoorSz[2], $geoHeight, 1.5, 4.5, $geoHingeTop);
-            float $xyzCord[] = whXYZ($wh);
+            float $wh[] = sg_notchRight($DoorSz[2], $geoHeight, 1.5, 4.5, $geoHingeTop);
+            float $xyzCord[] = sg_convert2DTo3D($wh);
 
             $offset[0] = sg_inchVal($DoorSz[0]/2);
             $offset[1] = sg_inchVal($geoTop);
             $offset[2] = 0;
             
-            float $polyCord[] = vrtxRePosition($xyzCord, $offset);
-            FirstPoly($polyCord);
-            AppnPoly($polyCord, 1, 4);
-            AppnPoly($polyCord, 5, 6);
+            float $polyCord[] = sg_vrtxMove($xyzCord, $offset);
+            sg_createPoly($polyCord);
+            sg_addPoly($polyCord, 1, 4);
+            sg_addPoly($polyCord, 5, 6);
 
         } else {
             float $geoTop;
@@ -78,22 +78,22 @@ proc GenerateHingeSide() {
                 $geoHingeTop = $HingePosTop[$arr];
             }
 
-            float $wh[] = vrtxRNotch($DoorSz[2], $geoHeight, 1.5, 4.5, $geoHingeTop);
-            float $xyzCord[] = whXYZ($wh);
+            float $wh[] = sg_notchRight($DoorSz[2], $geoHeight, 1.5, 4.5, $geoHingeTop);
+            float $xyzCord[] = sg_convert2DTo3D($wh);
 
             $offset[0] = sg_inchVal($DoorSz[0]/2);
             $offset[1] = sg_inchVal($geoTop);
             $offset[2] = 0;
 
-            float $polyCord[] = vrtxRePosition($xyzCord, $offset);
-            FirstPoly($polyCord);
-            AppnPoly($polyCord, 1, 4);
-            AppnPoly($polyCord, 5, 6);
+            float $polyCord[] = sg_vrtxMove($xyzCord, $offset);
+            sg_createPoly($polyCord);
+            sg_addPoly($polyCord, 1, 4);
+            sg_addPoly($polyCord, 5, 6);
         }
     }
 }
 
-proc FirstPoly(float $vrts[]) {
+proc sg_createPoly(float $vrts[]) {
     string $cmd = "polyCreateFacet ";
     for ($Macro = 0; $Macro < 4; $Macro++) {
         $cmd += "-p ";
@@ -106,7 +106,7 @@ proc FirstPoly(float $vrts[]) {
     eval($cmd);
 }
 
-proc AppnPoly(float $vrts[], int $edge, int $newVert) {
+proc sg_addPoly(float $vrts[], int $edge, int $newVert) {
     string $cmd = "polyAppend -ch 1 -ed " + $edge;
     for ($Macro = $newVert; $Macro < $newVert + 2; $Macro++) {
         $cmd += "-p ";
@@ -119,7 +119,7 @@ proc AppnPoly(float $vrts[], int $edge, int $newVert) {
     eval($cmd);
 }
 
-proc float[] vrtxRNotch(float $w, float $h, float $nw, float $nh, float $nTop) {
+proc float[] sg_notchRight(float $w, float $h, float $nw, float $nh, float $nTop) {
 
     float $xLn[3];
     float $yLn[4];
@@ -146,27 +146,4 @@ proc float[] vrtxRNotch(float $w, float $h, float $nw, float $nh, float $nTop) {
         $xLn[2], $yLn[2]
     };
     return $vrtxData;
-}
-
-proc float[] whXYZ(float $wh[]) {
-    float $xyzCord[];
-
-        for ($arr = 0; $arr < size($wh)/2; $arr++) {
-            $xyzCord[$arr*3] = 0; // x always zero
-            $xyzCord[$arr*3+2] = sg_inchVal($wh[$arr*2]); //y = h
-            $xyzCord[$arr*3+1] = sg_inchVal($wh[$arr*2+1]); //z = w
-            print("Vert #" + $arr + " | X : " + $xyzCord[$arr*3] + " | Y : " + $wh[$arr*2] + " | Z : " + $wh[$arr*2+1] + "\n");
-        }
-    return $xyzCord;
-}
-
-proc float[] vrtxRePosition(float $origin[], float $translate[]) {
-    float $rePosition[];
-
-    for ($arr=0; $arr < (size($origin)/3); $arr++) {
-        $rePosition[$arr*3] = $origin[$arr*3] + $translate[0]; // 0,3,6,9
-        $rePosition[$arr*3+1] = $origin[$arr*3+1] + $translate[1]; // 1,4,7,10
-        $rePosition[$arr*3+2] = $origin[$arr*3+2] + $translate[2]; // 2,5,8,11
-    }
-    return $rePosition;
 }

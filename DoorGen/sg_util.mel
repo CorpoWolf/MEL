@@ -5,3 +5,26 @@ global proc float sg_inchVal(float $value) {
 global proc float sg_midLine(float $posA, float $posB, float $objHeight) {
     return (($posB - ($posA + $objHeight))/2) + ($posA + $objHeight);
 }
+
+global proc float[] sg_convert2DTo3D(float $wh[]) {
+    float $xyzCord[];
+
+        for ($arr = 0; $arr < size($wh)/2; $arr++) {
+            $xyzCord[$arr*3] = 0; // x always zero
+            $xyzCord[$arr*3+2] = sg_inchVal($wh[$arr*2]); //y = h
+            $xyzCord[$arr*3+1] = sg_inchVal($wh[$arr*2+1]); //z = w
+            print("Vert #" + $arr + " | X : " + $xyzCord[$arr*3] + " | Y : " + $wh[$arr*2] + " | Z : " + $wh[$arr*2+1] + "\n");
+        }
+    return $xyzCord;
+}
+
+global proc float[] sg_vrtxMove(float $origin[], float $translate[]) {
+    float $rePosition[];
+
+    for ($arr=0; $arr < (size($origin)/3); $arr++) {
+        $rePosition[$arr*3] = $origin[$arr*3] + $translate[0]; // 0,3,6,9
+        $rePosition[$arr*3+1] = $origin[$arr*3+1] + $translate[1]; // 1,4,7,10
+        $rePosition[$arr*3+2] = $origin[$arr*3+2] + $translate[2]; // 2,5,8,11
+    }
+    return $rePosition;
+}
