@@ -2,7 +2,6 @@
 // VRChat Profile: https://vrchat.com/home/user/usr_45f42990-f078-4589-9263-3017ae863733
 // Twitter Profile: https://twitter.com/SawyerDotWolf
 
-
 proc sg_doorUI() {
     string $WinName = "PrimeWindow";
     
@@ -42,6 +41,7 @@ proc sg_doorConstructor() {
 //Right is positive, left is negative : X axis
 proc GenerateHingeSide() {
     global float $DoorSz[];
+    float $offset[];
 
     float $HingePosTop[] = {7.375, 39.3125, 71.25};
 
@@ -55,7 +55,10 @@ proc GenerateHingeSide() {
             float $wh[] = vrtxRNotch($DoorSz[2], $geoHeight, 1.5, 4.5, $geoHingeTop);
             float $xyzCord[] = whXYZ($wh);
 
-            float $offset[] = {inch($DoorSz[0]/2), inch($geoTop), 0};
+            $offset[0] = sg_inchVal($DoorSz[0]/2);
+            $offset[1] = sg_inchVal($geoTop);
+            $offset[2] = 0;
+            
             float $polyCord[] = vrtxRePosition($xyzCord, $offset);
             FirstPoly($polyCord);
             AppnPoly($polyCord, 1, 4);
@@ -78,7 +81,10 @@ proc GenerateHingeSide() {
             float $wh[] = vrtxRNotch($DoorSz[2], $geoHeight, 1.5, 4.5, $geoHingeTop);
             float $xyzCord[] = whXYZ($wh);
 
-            float $offset[] = {inch($DoorSz[0]/2), inch($geoTop), 0};
+            $offset[0] = sg_inchVal($DoorSz[0]/2);
+            $offset[1] = sg_inchVal($geoTop);
+            $offset[2] = 0;
+
             float $polyCord[] = vrtxRePosition($xyzCord, $offset);
             FirstPoly($polyCord);
             AppnPoly($polyCord, 1, 4);
@@ -147,8 +153,8 @@ proc float[] whXYZ(float $wh[]) {
 
         for ($arr = 0; $arr < size($wh)/2; $arr++) {
             $xyzCord[$arr*3] = 0; // x always zero
-            $xyzCord[$arr*3+2] = inch($wh[$arr*2]); //y = h
-            $xyzCord[$arr*3+1] = inch($wh[$arr*2+1]); //z = w
+            $xyzCord[$arr*3+2] = sg_inchVal($wh[$arr*2]); //y = h
+            $xyzCord[$arr*3+1] = sg_inchVal($wh[$arr*2+1]); //z = w
             print("Vert #" + $arr + " | X : " + $xyzCord[$arr*3] + " | Y : " + $wh[$arr*2] + " | Z : " + $wh[$arr*2+1] + "\n");
         }
     return $xyzCord;
@@ -163,12 +169,4 @@ proc float[] vrtxRePosition(float $origin[], float $translate[]) {
         $rePosition[$arr*3+2] = $origin[$arr*3+2] + $translate[2]; // 2,5,8,11
     }
     return $rePosition;
-}
-
-proc float inch(float $value) {
-    return $value * 2.54;
-}
-
-proc float midLine(float $posA, float $posB, float $objHeight) {
-    return (($posB - ($posA + $objHeight))/2) + ($posA + $objHeight);
 }

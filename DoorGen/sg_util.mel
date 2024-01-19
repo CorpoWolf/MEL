@@ -1,0 +1,7 @@
+global proc float sg_inchVal(float $value) {
+    return $value * 2.54;
+}
+
+global proc float sg_midLine(float $posA, float $posB, float $objHeight) {
+    return (($posB - ($posA + $objHeight))/2) + ($posA + $objHeight);
+}
