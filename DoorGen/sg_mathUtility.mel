@@ -1,7 +1,15 @@
+//Math Utility containing mathmatical conversions
+//1. inchVal -> Multiply inputs from cm to inches.
+//2. midLine -> Find the height data between two hinges.
+//3. convert2DTo3D -> Take W*H data and convert to XYZ.
+//4. vrtxMove -> Take the origin and move it to the correct position.
+//5. nothRight -> Take a (Width & Height) && (notchWidth & notchHeight & notchTop) and create vertex data for 3 polygons. 
+
 global proc float sg_inchVal(float $value) {
     return $value * 2.54;
 }
 
+//Takes the data from PosA and PosB and outputs the center point between them.
 global proc float sg_midLine(float $posA, float $posB, float $objHeight) {
     return (($posB - ($posA + $objHeight))/2) + ($posA + $objHeight);
 }
@@ -27,4 +35,33 @@ global proc float[] sg_vrtxMove(float $origin[], float $translate[]) {
         $rePosition[$arr*3+2] = $origin[$arr*3+2] + $translate[2]; // 2,5,8,11
     }
     return $rePosition;
+}
+
+global proc float[] sg_notchRight(float $w, float $h, float $nw, float $nh, float $nTop) {
+
+    float $xLn[3];
+    float $yLn[4];
+
+    $xLn[0] = $w/2;
+    $xLn[1] = $w/2-($w-$nw);
+    $xLn[2] = -$w/2;
+
+    $yLn[0] = 0;
+    $yLn[1] = -$nTop;
+    $yLn[2] = -$nTop - $nh;
+    $yLn[3] = -$h;
+    
+    float $vrtxData[] = {
+        $xLn[2], $yLn[0],
+        $xLn[0], $yLn[0],
+        $xLn[1], $yLn[1],
+        $xLn[2], $yLn[1],
+
+        $xLn[0], $yLn[3],
+        $xLn[1], $yLn[2],
+
+        $xLn[2], $yLn[3],
+        $xLn[2], $yLn[2]
+    };
+    return $vrtxData;
 }

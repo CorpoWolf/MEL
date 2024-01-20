@@ -1,0 +1,77 @@
+// Script to generate a door with size prompts
+// VRChat Profile: https://vrchat.com/home/user/usr_45f42990-f078-4589-9263-3017ae863733
+// Twitter Profile: https://twitter.com/SawyerDotWolf
+
+proc sg_doorUI() {
+    string $MAIN_WINDOW_GUI = "PrimeWindow";
+    
+    if (`window -exists $MAIN_WINDOW_GUI`) {
+        deleteUI $MAIN_WINDOW_GUI;
+    }
+    
+    window -t "Greythorne Door Generator" -w 300 -h 150 $MAIN_WINDOW_GUI;
+        columnLayout -adj true;
+        global string $SIZE_INPUTS[]; // Door Parameters
+        $SIZE_INPUTS[0] = `textFieldGrp -l "Door Width: "`;
+        $SIZE_INPUTS[1] = `textFieldGrp -l "Door Height: "`;
+        $SIZE_INPUTS[2] = `textFieldGrp -l "Door Thickness: "`;
+        button -l "Generate" -c "sg_doorConstructor";
+    showWindow $MAIN_WINDOW_GUI;
+}
+sg_doorUI();
+
+proc sg_doorConstructor() {
+    global string $SIZE_INPUTS[];
+    float $DOOR_DIMENSIONS[];
+
+    float $TOP_OF_HINGE[] = {7.375, 39.3125, 71.25};
+    float $HINGE_HEIGHT = 4.5;
+    float $HINGE_WIDTH = 1.5;
+
+    //Convert Size Inputs -> Door Dimensions
+    for ($i=0; $i < 3; $i++) {
+        $DOOR_DIMENSIONS[$i] = sg_inchParser($SIZE_INPUTS[$i]);
+    }
+
+    //Door Slab with Hinge side removed.
+    string $DOOR_OBJ[] = `polyCube -w $DOOR_DIMENSIONS[0] -h $DOOR_DIMENSIONS[1] -d $DOOR_DIMENSIONS[2] -n "Door"`;
+    move -rpr 0 ($DOOR_DIMENSIONS[1]/2) 0;
+    move -r 0 (-$DOOR_DIMENSIONS[1]/2) 0 ($DOOR_OBJ[0] + ".scalePivot") ($DOOR_OBJ[0] + ".rotatePivot");
+    select -r ($DOOR_OBJ[0] + ".f[4]");
+    doDelete;
+    
+    //Create the geometry for the hinge side of the door.
+    for ($i = 0; $i < size($TOP_OF_HINGE); $i++) {
+
+        float $BLOCK_TOP;
+        float $BLOCK_BOTTOM;
+
+        float $BLOCK_HEIGHT;
+        float $BLOCK_WIDTH = $DOOR_DIMENSIONS[2]; // Door Z-axis
+
+        switch ($i) {
+            case 0:
+                $BLOCK_TOP = 0;
+                $BLOCK_BOTTOM = -sg_midLine($TOP_OF_HINGE[0], $TOP_OF_HINGE[1], $HINGE_HEIGHT);
+                break;
+            case 1:
+                $BLOCK_TOP = -sg_midLine($TOP_OF_HINGE[0], $TOP_OF_HINGE[1], $HINGE_HEIGHT);
+                $BLOCK_BOTTOM = -sg_midLine($TOP_OF_HINGE[1], $TOP_OF_HINGE[2], $HINGE_HEIGHT);
+                break;
+            case 2:
+                $BLOCK_TOP = -sg_midLine($TOP_OF_HINGE[1], $TOP_OF_HINGE[2], $HINGE_HEIGHT);
+                $BLOCK_BOTTOM = -$DOOR_DIMENSIONS[1];
+                break;
+        }
+        $BLOCK_HEIGHT = $BLOCK_TOP - $BLOCK_BOTTOM;
+        float $OFFSET[] = {sg_inchVal($DOOR_DIMENSIONS[0]/2), sg_inchVal($DOOR_DIMENSIONS[1] + $BLOCK_TOP), 0};
+
+        float $NOTCH_POINTS[] = sg_notchRight($BLOCK_WIDTH, $BLOCK_HEIGHT, $HINGE_WIDTH, $HINGE_HEIGHT, ($TOP_OF_HINGE[$i] + $BLOCK_TOP));
+        float $VRTS_XYZ[] = sg_convert2DTo3D($NOTCH_POINTS);
+
+        float $VRTX_LOCATION[] = sg_vrtxMove($VRTS_XYZ, $OFFSET);
+        eval(sg_createPoly($VRTX_LOCATION));
+        eval(sg_addPoly($VRTX_LOCATION, 1, 4));
+        eval(sg_addPoly($VRTX_LOCATION, 5, 6));
+    }
+}

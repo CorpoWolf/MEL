@@ -1,0 +1,25 @@
+global proc string sg_createPoly(float $vrts[]) {
+    string $cmd = "polyCreateFacet ";
+    for ($Macro = 0; $Macro < 4; $Macro++) {
+        $cmd += "-p ";
+
+        for ($micro = 0; $micro < 3; $micro++) {
+            $cmd += $vrts[$Macro*3 + $micro] + " ";
+        }
+    }
+    print($cmd + "\n");
+    return $cmd;
+}
+
+global proc string sg_addPoly(float $vrts[], int $edge, int $newVert) {
+    string $cmd = "polyAppend -ch 1 -ed " + $edge;
+    for ($Macro = $newVert; $Macro < $newVert + 2; $Macro++) {
+        $cmd += "-p ";
+
+        for ($micro = 0; $micro < 3; $micro++) {
+            $cmd += $vrts[$Macro*3 + $micro] + " ";
+        }
+    }
+    print($cmd + "\n");
+    return $cmd;
+}
