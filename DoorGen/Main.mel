@@ -38,6 +38,61 @@ proc sg_doorConstructor() {
     GenerateHingeSide();
 }
 
+proc float[] sg_notchRight(float $w, float $h, float $nw, float $nh, float $nTop) {
+
+    float $xLn[3];
+    float $yLn[4];
+
+    $xLn[0] = $w/2;
+    $xLn[1] = $w/2-($w-$nw);
+    $xLn[2] = -$w/2;
+
+    $yLn[0] = 0;
+    $yLn[1] = -$nTop;
+    $yLn[2] = -$nTop - $nh;
+    $yLn[3] = -$h;
+    
+    float $vrtxData[] = {
+        $xLn[2], $yLn[0],
+        $xLn[0], $yLn[0],
+        $xLn[1], $yLn[1],
+        $xLn[2], $yLn[1],
+
+        $xLn[0], $yLn[3],
+        $xLn[1], $yLn[2],
+
+        $xLn[2], $yLn[3],
+        $xLn[2], $yLn[2]
+    };
+    return $vrtxData;
+}
+
+proc sg_createPoly(float $vrts[]) {
+    string $cmd = "polyCreateFacet ";
+    for ($Macro = 0; $Macro < 4; $Macro++) {
+        $cmd += "-p ";
+
+        for ($micro = 0; $micro < 3; $micro++) {
+            $cmd += $vrts[$Macro*3 + $micro] + " ";
+        }
+    }
+    print($cmd + "\n");
+    eval($cmd);
+}
+
+proc sg_addPoly(float $vrts[], int $edge, int $newVert) {
+    string $cmd = "polyAppend -ch 1 -ed " + $edge;
+    for ($Macro = $newVert; $Macro < $newVert + 2; $Macro++) {
+        $cmd += "-p ";
+
+        for ($micro = 0; $micro < 3; $micro++) {
+            $cmd += $vrts[$Macro*3 + $micro] + " ";
+        }
+    }
+    print($cmd + "\n");
+    eval($cmd);
+}
+
 //Right is positive, left is negative : X axis
 proc GenerateHingeSide() {
     global float $DoorSz[];
@@ -91,59 +146,4 @@ proc GenerateHingeSide() {
             sg_addPoly($polyCord, 5, 6);
         }
     }
-}
-
-proc sg_createPoly(float $vrts[]) {
-    string $cmd = "polyCreateFacet ";
-    for ($Macro = 0; $Macro < 4; $Macro++) {
-        $cmd += "-p ";
-
-        for ($micro = 0; $micro < 3; $micro++) {
-            $cmd += $vrts[$Macro*3 + $micro] + " ";
-        }
-    }
-    print($cmd + "\n");
-    eval($cmd);
-}
-
-proc sg_addPoly(float $vrts[], int $edge, int $newVert) {
-    string $cmd = "polyAppend -ch 1 -ed " + $edge;
-    for ($Macro = $newVert; $Macro < $newVert + 2; $Macro++) {
-        $cmd += "-p ";
-
-        for ($micro = 0; $micro < 3; $micro++) {
-            $cmd += $vrts[$Macro*3 + $micro] + " ";
-        }
-    }
-    print($cmd + "\n");
-    eval($cmd);
-}
-
-proc float[] sg_notchRight(float $w, float $h, float $nw, float $nh, float $nTop) {
-
-    float $xLn[3];
-    float $yLn[4];
-
-    $xLn[0] = $w/2;
-    $xLn[1] = $w/2-($w-$nw);
-    $xLn[2] = -$w/2;
-
-    $yLn[0] = 0;
-    $yLn[1] = -$nTop;
-    $yLn[2] = -$nTop - $nh;
-    $yLn[3] = -$h;
-    
-    float $vrtxData[] = {
-        $xLn[2], $yLn[0],
-        $xLn[0], $yLn[0],
-        $xLn[1], $yLn[1],
-        $xLn[2], $yLn[1],
-
-        $xLn[0], $yLn[3],
-        $xLn[1], $yLn[2],
-
-        $xLn[2], $yLn[3],
-        $xLn[2], $yLn[2]
-    };
-    return $vrtxData;
 }
